@@ -1,0 +1,87 @@
+var SS = SpreadsheetApp.openById('1tipbeDDKgLqzOWSQwrnh-UxQdFdHEh1_PQuJ3OpQVd4');
+var hours = 0
+var str = "";
+
+function doPost(e) {
+
+  var parsedData;
+  var result = {};
+  
+  try { 
+    parsedData = JSON.parse(e.postData.contents);
+  } 
+  catch(f){
+    return ContentService.createTextOutput("Error in parsing request body: " + f.message);
+  }
+   
+  if (parsedData !== undefined){
+    var flag = parsedData.format;
+    if (flag === undefined){
+      flag = 0;
+    }
+    
+    var sheet = SS.getSheetByName(parsedData.sheet_name); 
+    var dataArr = parsedData.values.split(","); 
+         
+    //var date_now = Utilities.formatDate(new Date(), "CST", "yyyy/MM/dd"); 
+    //var time_now = Utilities.formatDate(new Date(), "CST", "hh:mm:ss a"); 
+    var Curr_Date = new Date(new Date().setHours(new Date().getHours() + hours));
+    var Curr_Time = Utilities.formatDate(Curr_Date, "Asia/Bangkok", 'HH:mm:ss');
+
+    var name1   = dataArr     [0]; 
+    var name2   = dataArr     [1]; 
+    var id      = dataArr     [2]; 
+    var team    = dataArr     [3]; 
+    var section = dataArr     [4];
+    var day     = dataArr     [5];
+    var night   = dataArr     [6];
+    var dayy = new Date();
+    dayy.setHours(18,30);
+  
+    switch (parsedData.command) {
+      
+      case "insert_row":
+         
+          var nextRow = sheet.getLastRow() + 1;
+          sheet.getRange("A" + nextRow).setValue(Curr_Date);
+          sheet.getRange("B" + nextRow).setValue(Curr_Time);
+          sheet.getRange("C" + nextRow).setValue(name1);
+          sheet.getRange("D" + nextRow).setValue(name2);
+          sheet.getRange("E" + nextRow).setValue(id);
+          sheet.getRange("F" + nextRow).setValue(team);
+          sheet.getRange("G" + nextRow).setValue(section);
+          if(Curr_Date<dayy){
+            sheet.getRange("H" + nextRow).setValue(day);
+          }
+          else{
+            sheet.getRange("H" + nextRow).setValue(night);
+          }
+         str = "Success"; 
+         SpreadsheetApp.flush();
+         break;
+         
+      case "append_row":
+         
+         var publish_array = new Array(); 
+         
+         publish_array [0] = name1;
+         publish_array [1] = name2; 
+         publish_array [2] = id;  
+         publish_array [3] = team;   
+         publish_array [4] = section; 
+         
+         sheet.appendRow(publish_array); 
+         
+         str = "Success"; 
+         SpreadsheetApp.flush();
+         break;     
+ 
+    }
+    
+    return ContentService.createTextOutput(str);
+  } // endif (parsedData !== undefined)
+  
+  else {
+    return ContentService.createTextOutput("Error! Request body empty or in incorrect format.");
+  }
+}
