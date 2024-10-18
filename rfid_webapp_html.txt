@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons
+" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <style>
+      body{
+        font-family: "Sarabun"
+      }
+      table, th, td{
+        border: 1px solid black;
+        border-collapse: collapse;
+        padding: 10px;
+      }
+      tbody {
+        background-color: #e6f1ff;
+      }
+      tbody > tr > td {
+        text-align: center;
+        font-size:18px;
+        font-family: "Sarabun"
+      }
+      thead > tr > th {
+        text-align: center;
+      }
+      thead {
+        border-bottom: 2px solid rgb(160 160 160);
+        background-color: #4d9aff;
+        color: #fff;
+        font-size:18px;
+        font-family: "Sarabun"
+      }      
+    </style>
+  </head>
+  <body>
+    <b><h1 style="font-size:35px;text-align:center;font-family:Sarabun;">Manpower OT on holiday of MN2</h1></b>
+    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRYVNEtphb7LKh0wEqavwuHkyeZxRW5DImTPQ&s"  align="left" alt="MitsuLogo" style="width:200px;height:60px;position: relative; top:-90px; left: 10px;">
+    <img src="https://cdn-icons-gif.flaticon.com/10690/10690711.gif"  align="right" alt="MitsuLogo" style="width:80px;height:80px;position: relative; top:-90px; left: -50px;">
+<div id="real-time-clock" align='right' style="font-size:20px;font-family:Sarabun;"></div>
+<div class="container">
+   <div class="row">
+     <div class="col s12">
+      <table class="highlight">
+        <thead>
+          <tr>
+            <th>DATE</th>
+            <th>TIME IN</th>
+            <th>FIRST NAME</th>
+            <th>LAST NAME</th>
+            <th>EMPLOYEE ID</th>
+            <th>TEAM</th>
+            <th>SECTION</th>
+            <th>SHIFT</th>  
+          </tr>
+        </thead>
+
+        <tbody id="table-body">
+          
+        </tbody>
+      </table>
+
+     </div>
+   </div>
+</div>
+<script>
+ function updateDateTime() {
+    const clockElement = document.getElementById('real-time-clock');
+    const currentTime = new Date();
+
+    // Define arrays for days of the week and months to format the day and month names.
+    const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    const dayOfWeek = daysOfWeek[currentTime.getDay()];
+
+    const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    const month = months[currentTime.getMonth()];
+
+    const day = currentTime.getDate();
+    const year = currentTime.getFullYear();
+
+    // Calculate and format hours (in 12-hour format), minutes, seconds, and AM/PM.
+    let hours = currentTime.getHours();
+    const ampm = hours >= 12 ? 'PM' : 'AM';
+    hours = hours % 12 || 12;
+    const minutes = currentTime.getMinutes().toString().padStart(2, '0');
+    const seconds = currentTime.getSeconds().toString().padStart(2, '0');
+
+    // Construct the date and time string in the desired format.
+    const dateTimeString = `${dayOfWeek}, ${month} ${day}, ${year} ${hours}:${minutes}:${seconds} ${ampm}`;
+    clockElement.textContent = dateTimeString;
+}
+
+// Update the date and time every second (1000 milliseconds).
+setInterval(updateDateTime, 1000);
+
+// Initial update.
+updateDateTime();
+
+document.addEventListener('DOMContentLoaded',function(){
+  google.script.run.withSuccessHandler(createTable).getDataSheet()
+})
+
+function createTable(data){
+var tbody = document.getElementById("table-body")
+    data.forEach(function(r){
+  var row = document.createElement('tr')
+  var col1 = document.createElement('td')
+  var col2 = document.createElement('td')
+  var col3 = document.createElement('td')
+  var col4 = document.createElement('td')
+  var col5 = document.createElement('td')
+  var col6 = document.createElement('td')
+  var col7 = document.createElement('td')
+  var col8 = document.createElement('td')
+  col1.textContent = r[0]
+  col2.textContent = r[1]
+  col3.textContent = r[2]
+  col4.textContent = r[3]
+  col5.textContent = r[4]
+  col6.textContent = r[5]
+  col7.textContent = r[6]
+  col8.textContent = r[7]
+  row.appendChild(col1)
+  row.appendChild(col2)
+  row.appendChild(col3)
+  row.appendChild(col4)
+  row.appendChild(col5)
+  row.appendChild(col6)
+  row.appendChild(col7)
+  row.appendChild(col8)
+  tbody.appendChild(row)
+})
+
+  }
+
+</script>
+ <script type="text/javascript" src="js/materialize.min.js"></script>
+  </body>
+</html>
